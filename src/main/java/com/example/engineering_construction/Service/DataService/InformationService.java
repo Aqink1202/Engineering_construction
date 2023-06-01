@@ -6,8 +6,11 @@ import com.example.engineering_construction.Model.DataModel.InformationModel;
 import com.example.engineering_construction.Model.DataModel.LoadingModel;
 import com.example.engineering_construction.Model.ReturnModel.ReturnPieModel;
 import com.example.engineering_construction.Model.ReturnModel.ReturnStatusGaoModel;
+import com.example.engineering_construction.Service.ProcessService.BatchService;
 import com.example.engineering_construction.Service.ProcessService.MiService;
 import com.example.engineering_construction.Service.ProcessService.StrToAnythingService;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,6 +37,8 @@ public class InformationService {
     MiService miservice;
     @Autowired
     LoadingDao loadingdao;
+    @Autowired
+    BatchService batchservice;
 
     /**
      * 基础信息添加
@@ -437,97 +443,104 @@ public class InformationService {
      * 应以批量时生成model
      */
     private InformationModel setModel(XSSFRow row, Integer i) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
         int num = 0;
         try {
             InformationModel im = new InformationModel();
-            im.setCoding(row.getCell(num++).getStringCellValue());
-            im.setTown(row.getCell(num++).getStringCellValue());
-            im.setType(row.getCell(num++).getStringCellValue());
-            im.setName(row.getCell(num++).getStringCellValue());
+            im.setCoding(GetCellValue(row.getCell(num++)));
+            im.setTown(GetCellValue(row.getCell(num++)));
+            im.setType(GetCellValue(row.getCell(num++)));
+            im.setName(GetCellValue(row.getCell(num++)));
 
-            if (!Objects.equals(row.getCell(num).getStringCellValue(), "")) {
-                im.setLi_date(strtoanythingservice.Pi_StrToDate(row.getCell(num++).getStringCellValue()));
-            } else {
-                im.setLi_date(null);
-                num++;
-            }
+            im.setLi_date(!Objects.equals(GetCellValue(row.getCell(num++)), "") ?
+                    sdf.parse(GetCellValue(row.getCell(num - 1))) : null);
 
-            im.setPi_name(row.getCell(num++).getStringCellValue());
+            im.setPi_name(GetCellValue(row.getCell(num++)));
 
-            if (!Objects.equals(row.getCell(num).getStringCellValue(), "")) {
-                im.setPi_date(strtoanythingservice.Pi_StrToDate(row.getCell(num++).getStringCellValue()));
-            } else {
-                im.setPi_date(strtoanythingservice.Pi_StrToDate(null));
-                num++;
-            }
-            if (!Objects.equals(row.getCell(num).getStringCellValue(), "")) {
-                im.setChou_date(strtoanythingservice.Pi_StrToDate(row.getCell(num++).getStringCellValue()));
-            } else {
-                im.setChou_date(strtoanythingservice.Pi_StrToDate(null));
-                num++;
-            }
+            im.setPi_date(!Objects.equals(GetCellValue(row.getCell(num++)), "") ?
+                    sdf.parse(GetCellValue(row.getCell(num - 1))) : null);
+            im.setChou_date(!Objects.equals(GetCellValue(row.getCell(num++)), "") ?
+                    sdf.parse(GetCellValue(row.getCell(num - 1))) : null);
 
-            im.setHe_year(row.getCell(num++).getStringCellValue());
-            im.setBuild_year(row.getCell(num++).getStringCellValue());
-            im.setXiang_man(row.getCell(num++).getStringCellValue());
-            im.setConstruction(row.getCell(num++).getStringCellValue());
-            im.setTeam(row.getCell(num++).getStringCellValue());
-            im.setSupervision(row.getCell(num++).getStringCellValue());
-            im.setSup_man(row.getCell(num++).getStringCellValue());
-            im.setElectronic_version(row.getCell(num++).getStringCellValue());
+            im.setHe_year(GetCellValue(row.getCell(num++)));
+            im.setBuild_year(GetCellValue(row.getCell(num++)));
+            im.setXiang_man(GetCellValue(row.getCell(num++)));
+            im.setConstruction(GetCellValue(row.getCell(num++)));
+            im.setTeam(GetCellValue(row.getCell(num++)));
+            im.setSupervision(GetCellValue(row.getCell(num++)));
+            im.setSup_man(GetCellValue(row.getCell(num++)));
 
-            if (!Objects.equals(row.getCell(num).getStringCellValue(), "")) {
-                im.setShen_date(strtoanythingservice.Pi_StrToDate(row.getCell(num++).getStringCellValue()));
-            } else {
-                im.setShen_date(strtoanythingservice.Pi_StrToDate(null));
-                num++;
-            }
-            if (!Objects.equals(row.getCell(num).getStringCellValue(), "")) {
-                im.setWei_date(strtoanythingservice.Pi_StrToDate(row.getCell(num++).getStringCellValue()));
-            } else {
-                im.setWei_date(strtoanythingservice.Pi_StrToDate(null));
-                num++;
-            }
-            if (!Objects.equals(row.getCell(num).getStringCellValue(), "")) {
-                im.setWan_date(strtoanythingservice.Pi_StrToDate(row.getCell(num++).getStringCellValue()));
-            } else {
-                im.setWan_date(strtoanythingservice.Pi_StrToDate(null));
-                num++;
-            }
+            im.setElectronic_version(GetCellValue(row.getCell(num++)));
 
-            im.setBei(row.getCell(num++).getStringCellValue());
-            im.setStatus(row.getCell(num++).getStringCellValue());
-            im.setJiagong(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setRengong(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setZhanlie(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setJianli(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setQita(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setAllmoney(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setGuimo(row.getCell(num++).getStringCellValue());
-            im.setHujun(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setRuhu_type(row.getCell(num++).getStringCellValue());
+            im.setShen_date(!Objects.equals(GetCellValue(row.getCell(num++)), "") ?
+                    sdf.parse(GetCellValue(row.getCell(num - 1))) : null);
+            im.setWei_date(!Objects.equals(GetCellValue(row.getCell(num++)), "") ?
+                    sdf.parse(GetCellValue(row.getCell(num - 1))) : null);
+            im.setWan_date(!Objects.equals(GetCellValue(row.getCell(num++)), "") ?
+                    sdf.parse(GetCellValue(row.getCell(num - 1))) : null);
 
+            im.setBei(GetCellValue(row.getCell(num++)));
+            im.setStatus(GetCellValue(row.getCell(num++)));
+            im.setJiagong(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setRengong(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setZhanlie(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setJianli(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setQita(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setAllmoney(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setGuimo(GetCellValue(row.getCell(num++)));
+            im.setHujun(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setRuhu_type(GetCellValue(row.getCell(num++)));
             im.setShitong((double) 0);
-            im.setRuhu_mi(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
+            im.setRuhu_mi(Double.parseDouble(GetCellValue(row.getCell(num++))));
             im.setRuhu_hu((double) 0);
-            im.setJiexu(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setXiangti(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setGuanglan_4D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setGuanglan_8D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setGuanglan_12D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setGuanglan_24D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setGuanglan_48D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setGuanglan_72D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setGuanglan_96D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setGuanglan_144D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setGuanglan_288D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setZhimai(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setKaiwa(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            im.setDingguan(strtoanythingservice.StrToDou(row.getCell(num).getStringCellValue()));
+            im.setJiexu(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setXiangti(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_4D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_8D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_12D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_24D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_48D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_72D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_96D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_144D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_288D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setZhimai(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setKaiwa(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setDingguan(Double.parseDouble(GetCellValue(row.getCell(num++))));
 
             return im;
         } catch (Exception e) {
             throw new Exception("第" + i + "行 " + "第" + num + "列数据发生错误！！");
+        }
+    }
+
+    /**
+     * 私有方法
+     * <p>
+     * 用以根据类型插入值
+     */
+    private String GetCellValue(Cell cell) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (BatchService.GetCellNull(cell)) {
+            switch (BatchService.GetCellType(cell)) {
+                case "String" -> {
+                    return cell.getStringCellValue();
+                }
+                case "Number" -> {
+                    if (BatchService.GetCellDate(cell)) {
+                        return sdf.format(cell.getDateCellValue());
+                    } else {
+                        return NumberToTextConverter.toText(cell.getNumericCellValue());
+                    }
+                }
+                default -> {
+                    return "";
+                }
+            }
+        } else {
+            return "";
         }
     }
 

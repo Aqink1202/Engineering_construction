@@ -2,8 +2,11 @@ package com.example.engineering_construction.Service.DataService;
 
 import com.example.engineering_construction.Dao.MySQLDao.ZhongDianDao;
 import com.example.engineering_construction.Model.DataModel.ZhongDianModel;
+import com.example.engineering_construction.Service.ProcessService.BatchService;
 import com.example.engineering_construction.Service.ProcessService.MiService;
 import com.example.engineering_construction.Service.ProcessService.StrToAnythingService;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -12,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -116,26 +120,52 @@ public class ZhongDianService {
      * 生成model实例
      */
     public ZhongDianModel setModel(XSSFRow row, Integer i) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
         int num = 0;
         try {
             ZhongDianModel zdm = new ZhongDianModel();
 
-            zdm.setName(row.getCell(num++).getStringCellValue());
-            zdm.setDanwei(row.getCell(num++).getStringCellValue());
-            if (!Objects.equals(row.getCell(num).getStringCellValue(), "")) {
-                zdm.setShijian(strtoanythingservice.Pi_StrToDate(row.getCell(num++).getStringCellValue()));
-            } else {
-                zdm.setShijian(null);
-                num++;
-            }
-            zdm.setNeirong(row.getCell(num++).getStringCellValue());
-            zdm.setZengti(row.getCell(num++).getStringCellValue());
-            zdm.setShangzhou(row.getCell(num++).getStringCellValue());
-            zdm.setZhongdian(row.getCell(num++).getStringCellValue());
+            zdm.setName(GetCellValue(row.getCell(num++)));
+            zdm.setDanwei(GetCellValue(row.getCell(num++)));
+            zdm.setShijian(sdf.parse(GetCellValue(row.getCell(num++))));
+            zdm.setNeirong(GetCellValue(row.getCell(num++)));
+            zdm.setZengti(GetCellValue(row.getCell(num++)));
+            zdm.setShangzhou(GetCellValue(row.getCell(num++)));
+            zdm.setZhongdian(GetCellValue(row.getCell(num++)));
 
             return zdm;
         } catch (Exception e) {
             throw new Exception("第" + i + "行 " + "第" + num + "列数据发生错误！！");
+        }
+    }
+
+    /**
+     * 私有方法
+     * <p>
+     * 用以根据类型插入值
+     */
+    private String GetCellValue(Cell cell) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (BatchService.GetCellNull(cell)) {
+            switch (BatchService.GetCellType(cell)) {
+                case "String" -> {
+                    return cell.getStringCellValue();
+                }
+                case "Number" -> {
+                    if (BatchService.GetCellDate(cell)) {
+                        return sdf.format(cell.getDateCellValue());
+                    } else {
+                        return NumberToTextConverter.toText(cell.getNumericCellValue());
+                    }
+                }
+                default -> {
+                    return "";
+                }
+            }
+        } else {
+            return "";
         }
     }
 }

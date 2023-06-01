@@ -8,10 +8,9 @@ import com.example.engineering_construction.Model.DataModel.LoadingModel;
 import com.example.engineering_construction.Model.DataModel.ManReportModel;
 import com.example.engineering_construction.Model.DataModel.QuantityModel;
 import com.example.engineering_construction.Model.ReturnModel.*;
-import com.example.engineering_construction.Service.ProcessService.ImageService;
-import com.example.engineering_construction.Service.ProcessService.MiService;
-import com.example.engineering_construction.Service.ProcessService.StrToAnythingService;
-import com.example.engineering_construction.Service.ProcessService.WeekService;
+import com.example.engineering_construction.Service.ProcessService.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -1839,46 +1838,76 @@ public class QuantityService {
         try {
             QuantityModel qm = new QuantityModel();
 
-            qm.setCoding(row.getCell(num++).getStringCellValue());
-            qm.setName(row.getCell(num++).getStringCellValue());
-            qm.setTime(row.getCell(num++).getStringCellValue());
+            qm.setCoding(GetCellValue(row.getCell(num++)));
+            qm.setName(GetCellValue(row.getCell(num++)));
+            qm.setTime(GetCellValue(row.getCell(num++)));
 
-            qm.setConstruction(row.getCell(num++).getStringCellValue());
-            qm.setTeam(row.getCell(num++).getStringCellValue());
+            qm.setConstruction(GetCellValue(row.getCell(num++)));
+            qm.setTeam(GetCellValue(row.getCell(num++)));
 
             //生成上报时间
             qm.setDate(new Date());
 
-            qm.setRuhu_type(row.getCell(num++).getStringCellValue());
+            qm.setRuhu_type(GetCellValue(row.getCell(num++)));
             qm.setShitong((double) 0);
-            qm.setRuhu_mi(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
+            qm.setRuhu_mi(Double.parseDouble(GetCellValue(row.getCell(num++))));
             qm.setRuhu_hu((double) 0);
-            qm.setJiexu(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setXiangti(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setGuanglan_4D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setGuanglan_8D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setGuanglan_12D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setGuanglan_24D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setGuanglan_48D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setGuanglan_72D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setGuanglan_96D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setGuanglan_144D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setGuanglan_288D(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setZhimai(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setKaiwa(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
-            qm.setDingguan(strtoanythingservice.StrToDou(row.getCell(num++).getStringCellValue()));
 
-            qm.setType(row.getCell(num++).getStringCellValue());
+            qm.setJiexu(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setXiangti(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setGuanglan_4D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setGuanglan_8D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setGuanglan_12D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setGuanglan_24D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setGuanglan_48D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setGuanglan_72D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setGuanglan_96D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setGuanglan_144D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setGuanglan_288D(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setZhimai(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setKaiwa(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            qm.setDingguan(Double.parseDouble(GetCellValue(row.getCell(num++))));
+
+            qm.setType(GetCellValue(row.getCell(num++)));
 
             //生成审批环节
             qm.setLink("监理审批");
 
-            qm.setSup_man(row.getCell(num++).getStringCellValue());
-            qm.setCom_man(row.getCell(num++).getStringCellValue());
+            qm.setSup_man(GetCellValue(row.getCell(num++)));
+            qm.setCom_man(GetCellValue(row.getCell(num++)));
 
             return qm;
         } catch (Exception e) {
             throw new Exception("第" + i + "行 " + "第" + num + "列数据发生错误！！");
+        }
+    }
+
+    /**
+     * 私有方法
+     * <p>
+     * 用以根据类型插入值
+     */
+    private String GetCellValue(Cell cell) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (BatchService.GetCellNull(cell)) {
+            switch (BatchService.GetCellType(cell)) {
+                case "String" -> {
+                    return cell.getStringCellValue();
+                }
+                case "Number" -> {
+                    if (BatchService.GetCellDate(cell)) {
+                        return sdf.format(cell.getDateCellValue());
+                    } else {
+                        return NumberToTextConverter.toText(cell.getNumericCellValue());
+                    }
+                }
+                default -> {
+                    return "";
+                }
+            }
+        } else {
+            return "";
         }
     }
 

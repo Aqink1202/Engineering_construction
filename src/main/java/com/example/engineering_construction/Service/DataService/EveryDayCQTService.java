@@ -1,6 +1,7 @@
 package com.example.engineering_construction.Service.DataService;
 
 import com.example.engineering_construction.Model.DataModel.EveryDayCQTModel;
+import com.example.engineering_construction.Service.ProcessService.BatchService;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -8,6 +9,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 
 import org.apache.poi.ss.util.NumberToTextConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -91,72 +93,72 @@ public class EveryDayCQTService {
             setCellStyle(weneed, row, num++, edc.getLongitude(), edc.getYouxiao());
 
             setCellStyle(weneed, row, num++, edc.getGd5xinhao(), edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ? edc.getGd5nr() : "",
-                    edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ? edc.getGd5pinlv() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ? edc.getGd5pci() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ? edc.getGd5ecl() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ? edc.getGd5rsrp() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ? edc.getGd5sinr() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ? "VoNR" : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ? "是" : ""
-                    , edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ?
+                    edc.getGd5nr() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ?
+                    edc.getGd5pinlv() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ?
+                    edc.getGd5pci() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ?
+                    edc.getGd5ecl() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ?
+                    edc.getGd5rsrp() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ?
+                    edc.getGd5sinr() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ?
+                    "VoNR" : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd5xinhao(), "有信号") ?
+                    "是" : "", edc.getYouxiao());
 
 
             num += 5;
             setCellStyle(weneed, row, num++, edc.getYd5xinhao(), edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ? edc.getYd5nr() : "",
-                    edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ? edc.getYd5pinlv() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ? edc.getYd5pci() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ? edc.getYd5ecl() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ? edc.getYd5rsrp() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ? edc.getYd5sinr() : ""
-                    , edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ?
+                    edc.getYd5nr() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ?
+                    edc.getYd5pinlv() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ?
+                    edc.getYd5pci() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ?
+                    edc.getYd5ecl() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ?
+                    edc.getYd5rsrp() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd5xinhao(), "有信号") ?
+                    edc.getYd5sinr() : "", edc.getYouxiao());
 
             num += 5;
             setCellStyle(weneed, row, num++, edc.getGd4xinhao(), edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ? edc.getGd4lte() : "",
-                    edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ? edc.getGd4pinlv() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ? edc.getGd4pci() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ? edc.getGd4ecl() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ? edc.getGd4rsrp() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ? edc.getGd4sinr() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ? "VoLTE" : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ? "是" : ""
-                    , edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ?
+                    edc.getGd4lte() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ?
+                    edc.getGd4pinlv() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ?
+                    edc.getGd4pci() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ?
+                    edc.getGd4ecl() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ?
+                    edc.getGd4rsrp() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ?
+                    edc.getGd4sinr() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ?
+                    "VoLTE" : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getGd4xinhao(), "有信号") ?
+                    "是" : "", edc.getYouxiao());
 
             num += 5;
             setCellStyle(weneed, row, num++, edc.getYd4xinhao(), edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd4xinhao(), "有信号") ? edc.getYd4lte() : "",
-                    edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd4xinhao(), "有信号") ? edc.getYd4pinlv() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd4xinhao(), "有信号") ? edc.getYd4pci() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd4xinhao(), "有信号") ? edc.getYd4ecl() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd4xinhao(), "有信号") ? edc.getYd4rsrp() : ""
-                    , edc.getYouxiao());
-            setCellStyle(weneed, row, num, Objects.equals(edc.getYd4xinhao(), "有信号") ? edc.getYd4sinr() : ""
-                    , edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd4xinhao(), "有信号") ?
+                    edc.getYd4lte() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd4xinhao(), "有信号") ?
+                    edc.getYd4pinlv() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd4xinhao(), "有信号") ?
+                    edc.getYd4pci() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd4xinhao(), "有信号") ?
+                    edc.getYd4ecl() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num++, Objects.equals(edc.getYd4xinhao(), "有信号") ?
+                    edc.getYd4rsrp() : "", edc.getYouxiao());
+            setCellStyle(weneed, row, num, Objects.equals(edc.getYd4xinhao(), "有信号") ?
+                    edc.getYd4sinr() : "", edc.getYouxiao());
         }
 
         inputStream.close();
@@ -189,13 +191,17 @@ public class EveryDayCQTService {
      * 判断该信息是否可用
      */
     private boolean isNeed(EveryDayCQTModel edc) {
-        return (GetStringNull(edc.getGd5xinhao()) && GetStringNull(edc.getGd5pinlv()) ||
+        return (BatchService.GetStringNull(edc.getGd5xinhao()) &&
+                BatchService.GetStringNull(edc.getGd5pinlv()) ||
                 Objects.equals(edc.getGd5xinhao(), "无信号")) &&
-                (GetStringNull(edc.getYd5xinhao()) && GetStringNull(edc.getYd5pinlv()) ||
+                (BatchService.GetStringNull(edc.getYd5xinhao()) &&
+                        BatchService.GetStringNull(edc.getYd5pinlv()) ||
                         Objects.equals(edc.getYd5xinhao(), "无信号")) &&
-                (GetStringNull(edc.getGd4xinhao()) && GetStringNull(edc.getGd4pinlv()) ||
+                (BatchService.GetStringNull(edc.getGd4xinhao()) &&
+                        BatchService.GetStringNull(edc.getGd4pinlv()) ||
                         Objects.equals(edc.getGd4xinhao(), "无信号")) &&
-                (GetStringNull(edc.getYd4xinhao()) && GetStringNull(edc.getYd4pinlv()) ||
+                (BatchService.GetStringNull(edc.getYd4xinhao()) &&
+                        BatchService.GetStringNull(edc.getYd4pinlv()) ||
                         Objects.equals(edc.getYd4xinhao(), "无信号")) &&
                 (Integer.parseInt(edc.getXuhao()) == 0);
     }
@@ -314,60 +320,21 @@ public class EveryDayCQTService {
     /**
      * 私有方法
      * <p>
-     * 判断cell是否为空
-     */
-    private boolean GetCellNull(Cell cell) {
-        return cell == null || cell.getCellType().equals(CellType.BLANK);
-    }
-
-    /**
-     * 私有方法
-     * <p>
-     * 判断字符串是否为空
-     */
-    private boolean GetStringNull(String in) {
-        return in != null && !in.equals("");
-    }
-
-    /**
-     * 私有方法
-     * <p>
-     * 用以判断该格的类型
-     */
-    private String GetCellType(Cell cell) {
-        if (cell.getCellType() == CellType.NUMERIC) {
-            return "Number";
-        }
-        return "String";
-    }
-
-    /**
-     * 私有方法
-     * <p>
-     * 用以判断是否为日期
-     */
-    private boolean GetCellDate(Cell cell) {
-        return DateUtil.isCellDateFormatted(cell);
-    }
-
-    /**
-     * 私有方法
-     * <p>
      * 用以根据类型插入值
      */
     private String GetCellValue(Cell cell) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (!GetCellNull(cell)) {
-            switch (GetCellType(cell)) {
+        if (BatchService.GetCellNull(cell)) {
+            switch (BatchService.GetCellType(cell)) {
                 case "String" -> {
-                    return Deletetrim(cell.getStringCellValue());
+                    return BatchService.Deletetrim(cell.getStringCellValue());
                 }
                 case "Number" -> {
-                    if (GetCellDate(cell)) {
-                        return Deletetrim(sdf.format(cell.getDateCellValue()));
+                    if (BatchService.GetCellDate(cell)) {
+                        return BatchService.Deletetrim(sdf.format(cell.getDateCellValue()));
                     } else {
-                        return Deletetrim(NumberToTextConverter.toText(cell.getNumericCellValue()));
+                        return BatchService.Deletetrim(NumberToTextConverter.toText(cell.getNumericCellValue()));
                     }
                 }
                 default -> {
@@ -379,13 +346,4 @@ public class EveryDayCQTService {
         }
     }
 
-    /**
-     * 私有方法
-     * <p>
-     * 用以删除前后空格
-     */
-    private String Deletetrim(String in) {
-        in = in.replaceAll("(\\r\\n|\\n|\\\\n|\\s)", "");
-        return in.replaceAll(" ", "");
-    }
 }

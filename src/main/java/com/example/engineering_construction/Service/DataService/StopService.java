@@ -4,8 +4,12 @@ import com.example.engineering_construction.Dao.MySQLDao.StopDao;
 import com.example.engineering_construction.Model.DataModel.InformationModel;
 import com.example.engineering_construction.Model.DataModel.StopModel;
 import com.example.engineering_construction.Model.FindModel.FindDateNameModel;
+import com.example.engineering_construction.Service.ProcessService.BatchService;
 import com.example.engineering_construction.Service.ProcessService.MiService;
 import com.example.engineering_construction.Service.ProcessService.StrToAnythingService;
+import org.apache.commons.collections4.Get;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Transactional
@@ -395,15 +400,17 @@ public class StopService {
      * 生成model实例
      */
     public StopModel setModel(XSSFRow row, Integer i) throws Exception {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
         int num = 0;
         try {
             StopModel sm = new StopModel();
 
-            sm.setCoding(row.getCell(num++).getStringCellValue());
-            sm.setName(row.getCell(num++).getStringCellValue());
-            sm.setTime(strtoanythingservice.StrToInt(row.getCell(num++).getStringCellValue()));
-            sm.setStat_date(strtoanythingservice.Pi_StrToDate(row.getCell(num++).getStringCellValue()));
-            sm.setEnd_date(strtoanythingservice.Pi_StrToDate(row.getCell(num++).getStringCellValue()));
+            sm.setCoding(GetCellValue(row.getCell(num++)));
+            sm.setName(GetCellValue(row.getCell(num++)));
+            sm.setTime(Integer.parseInt(GetCellValue(row.getCell(num++))));
+            sm.setStat_date(sdf.parse(GetCellValue(row.getCell(num++))));
+            sm.setEnd_date(sdf.parse(GetCellValue(row.getCell(num++))));
 
             return sm;
         } catch (Exception e) {
@@ -411,4 +418,32 @@ public class StopService {
         }
     }
 
+    /**
+     * 私有方法
+     * <p>
+     * 用以根据类型插入值
+     */
+    private String GetCellValue(Cell cell) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (BatchService.GetCellNull(cell)) {
+            switch (BatchService.GetCellType(cell)) {
+                case "String" -> {
+                    return cell.getStringCellValue();
+                }
+                case "Number" -> {
+                    if (BatchService.GetCellDate(cell)) {
+                        return sdf.format(cell.getDateCellValue());
+                    } else {
+                        return NumberToTextConverter.toText(cell.getNumericCellValue());
+                    }
+                }
+                default -> {
+                    return "";
+                }
+            }
+        } else {
+            return "";
+        }
+    }
 }

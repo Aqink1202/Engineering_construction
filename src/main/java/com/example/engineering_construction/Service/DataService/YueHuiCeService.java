@@ -1,6 +1,7 @@
 package com.example.engineering_construction.Service.DataService;
 
 import com.example.engineering_construction.Model.DataModel.YueHuiCeModel;
+import com.example.engineering_construction.Service.ProcessService.BatchService;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -16,7 +17,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.sql.SQLOutput;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -249,13 +249,13 @@ public class YueHuiCeService {
     private String GetCellValue(Cell cell) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
-        if (!GetCellNull(cell)) {
-            switch (GetCellType(cell)) {
+        if (BatchService.GetCellNull(cell)) {
+            switch (BatchService.GetCellType(cell)) {
                 case "String" -> {
                     return cell.getStringCellValue();
                 }
                 case "Number" -> {
-                    if (GetCellDate(cell)) {
+                    if (BatchService.GetCellDate(cell)) {
                         return sdf.format(cell.getDateCellValue());
                     } else {
                         return NumberToTextConverter.toText(cell.getNumericCellValue());
@@ -320,8 +320,10 @@ public class YueHuiCeService {
         if (Objects.equals(xinhao, "无信号")) {
             return true;
         }
-        return (GetStringNull(xinhao) && GetStringNull(nr) && GetStringNull(pinlv) && GetStringNull(pci)
-                && GetStringNull(ecl) && GetStringNull(rsrp) && GetStringNull(sinr));
+        return (BatchService.GetStringNull(xinhao) && BatchService.GetStringNull(nr) &&
+                BatchService.GetStringNull(pinlv) && BatchService.GetStringNull(pci) &&
+                BatchService.GetStringNull(ecl) && BatchService.GetStringNull(rsrp) &&
+                BatchService.GetStringNull(sinr));
     }
 
     /**
@@ -337,45 +339,4 @@ public class YueHuiCeService {
             cell.setCellStyle(weneed);
         }
     }
-
-    /**
-     * 私有方法
-     * <p>
-     * 判断字符串是否为空
-     */
-    private boolean GetStringNull(String in) {
-        return in != null && !in.equals("") && !in.equals("N/A");
-    }
-
-    /**
-     * 私有方法
-     * <p>
-     * 判断cell是否为空
-     */
-    private boolean GetCellNull(Cell cell) {
-        return cell == null || cell.getCellType().equals(CellType.BLANK);
-    }
-
-    /**
-     * 私有方法
-     * <p>
-     * 用以判断该格的类型
-     */
-    private String GetCellType(Cell cell) {
-        if (cell.getCellType() == CellType.NUMERIC) {
-            return "Number";
-        }
-        return "String";
-    }
-
-
-    /**
-     * 私有方法
-     * <p>
-     * 用以判断是否为日期
-     */
-    private boolean GetCellDate(Cell cell) {
-        return DateUtil.isCellDateFormatted(cell);
-    }
-
 }
