@@ -400,7 +400,7 @@ public class StopService {
      * 生成model实例
      */
     public StopModel setModel(XSSFRow row, Integer i) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
         int num = 0;
         try {
@@ -408,9 +408,13 @@ public class StopService {
 
             sm.setCoding(GetCellValue(row.getCell(num++)));
             sm.setName(GetCellValue(row.getCell(num++)));
-            sm.setTime(Integer.parseInt(GetCellValue(row.getCell(num++))));
-            sm.setStat_date(sdf.parse(GetCellValue(row.getCell(num++))));
-            sm.setEnd_date(sdf.parse(GetCellValue(row.getCell(num++))));
+
+            sm.setTime(SetStringInteger(GetCellValue(row.getCell(num++))));
+
+            sm.setStat_date(!Objects.equals(GetCellValue(row.getCell(num++)), "") ?
+                    sdf.parse(GetCellValue(row.getCell(num - 1))) : null);
+            sm.setEnd_date(!Objects.equals(GetCellValue(row.getCell(num++)), "") ?
+                    sdf.parse(GetCellValue(row.getCell(num - 1))) : null);
 
             return sm;
         } catch (Exception e) {
@@ -421,10 +425,23 @@ public class StopService {
     /**
      * 私有方法
      * <p>
+     * 当输入值不为空时，转化成数值，否则置null
+     */
+    private Integer SetStringInteger(String in) {
+        if (BatchService.GetStringNull(in)) {
+            return Integer.valueOf(in);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 私有方法
+     * <p>
      * 用以根据类型插入值
      */
     private String GetCellValue(Cell cell) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
         if (BatchService.GetCellNull(cell)) {
             switch (BatchService.GetCellType(cell)) {

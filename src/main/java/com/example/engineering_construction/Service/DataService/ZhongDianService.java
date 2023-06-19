@@ -120,7 +120,7 @@ public class ZhongDianService {
      * 生成model实例
      */
     public ZhongDianModel setModel(XSSFRow row, Integer i) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
         int num = 0;
         try {
@@ -128,7 +128,10 @@ public class ZhongDianService {
 
             zdm.setName(GetCellValue(row.getCell(num++)));
             zdm.setDanwei(GetCellValue(row.getCell(num++)));
-            zdm.setShijian(sdf.parse(GetCellValue(row.getCell(num++))));
+
+            zdm.setShijian(!Objects.equals(GetCellValue(row.getCell(num++)), "") ?
+                    sdf.parse(GetCellValue(row.getCell(num - 1))) : null);
+
             zdm.setNeirong(GetCellValue(row.getCell(num++)));
             zdm.setZengti(GetCellValue(row.getCell(num++)));
             zdm.setShangzhou(GetCellValue(row.getCell(num++)));
@@ -146,7 +149,8 @@ public class ZhongDianService {
      * 用以根据类型插入值
      */
     private String GetCellValue(Cell cell) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+
 
         if (BatchService.GetCellNull(cell)) {
             switch (BatchService.GetCellType(cell)) {

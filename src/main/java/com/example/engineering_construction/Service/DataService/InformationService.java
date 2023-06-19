@@ -14,6 +14,7 @@ import org.apache.poi.ss.util.NumberToTextConverter;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.hibernate.engine.jdbc.batch.spi.Batch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -443,7 +444,7 @@ public class InformationService {
      * 应以批量时生成model
      */
     private InformationModel setModel(XSSFRow row, Integer i) throws Exception {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
         int num = 0;
         try {
@@ -482,32 +483,33 @@ public class InformationService {
 
             im.setBei(GetCellValue(row.getCell(num++)));
             im.setStatus(GetCellValue(row.getCell(num++)));
-            im.setJiagong(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setRengong(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setZhanlie(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setJianli(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setQita(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setAllmoney(Double.parseDouble(GetCellValue(row.getCell(num++))));
+
+            im.setJiagong(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setRengong(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setZhanlie(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setJianli(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setQita(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setAllmoney(SetStringDouble(GetCellValue(row.getCell(num++))));
             im.setGuimo(GetCellValue(row.getCell(num++)));
-            im.setHujun(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setHujun(SetStringDouble(GetCellValue(row.getCell(num++))));
             im.setRuhu_type(GetCellValue(row.getCell(num++)));
             im.setShitong((double) 0);
-            im.setRuhu_mi(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setRuhu_mi(SetStringDouble(GetCellValue(row.getCell(num++))));
             im.setRuhu_hu((double) 0);
-            im.setJiexu(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setXiangti(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setGuanglan_4D(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setGuanglan_8D(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setGuanglan_12D(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setGuanglan_24D(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setGuanglan_48D(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setGuanglan_72D(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setGuanglan_96D(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setGuanglan_144D(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setGuanglan_288D(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setZhimai(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setKaiwa(Double.parseDouble(GetCellValue(row.getCell(num++))));
-            im.setDingguan(Double.parseDouble(GetCellValue(row.getCell(num++))));
+            im.setJiexu(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setXiangti(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_4D(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_8D(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_12D(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_24D(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_48D(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_72D(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_96D(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_144D(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setGuanglan_288D(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setZhimai(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setKaiwa(SetStringDouble(GetCellValue(row.getCell(num++))));
+            im.setDingguan(SetStringDouble(GetCellValue(row.getCell(num++))));
 
             return im;
         } catch (Exception e) {
@@ -518,10 +520,23 @@ public class InformationService {
     /**
      * 私有方法
      * <p>
+     * 当输入值不为空时，转化成数值，否则置null
+     */
+    private Double SetStringDouble(String in) {
+        if (BatchService.GetStringNull(in)) {
+            return Double.valueOf(in);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 私有方法
+     * <p>
      * 用以根据类型插入值
      */
     private String GetCellValue(Cell cell) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
         if (BatchService.GetCellNull(cell)) {
             switch (BatchService.GetCellType(cell)) {
